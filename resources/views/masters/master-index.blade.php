@@ -30,7 +30,7 @@
         <div class="row">
 
             @yield('content')
-            @include('side-menus.right-menu-index')
+            {{-- @include('side-menus.right-menu-index') --}}
 
         </div>
     </div>
