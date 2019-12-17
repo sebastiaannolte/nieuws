@@ -62,8 +62,9 @@ class HomeController extends Controller
 
         $sub_menu = Category::where('category_link', Category::where('category_name', $name)->pluck('id'))->get();
 
-        $this->category_tree(Category::where('category_name', $name)->pluck('category_link'));
-        $this->tags(Category::where('category_name', $name)->pluck('id'));
+        $cat = Category::where('category_name', $name)->first();
+        $this->category_tree($cat->category_link);
+        $this->tags($cat->id);
 
 
 
@@ -100,12 +101,13 @@ class HomeController extends Controller
         //$this->urls[] = $name;
 
         $prevCat = (request()->segment(count(request()->segments()) - 1));
+        $categoryPrev = Category::where('category_name', $prevCat)->pluck('id');
         $catIddd = Category::where('category_name', $name)->pluck('id')->first();
 
-        if (count(Category::where('category_link', $catIddd)->get()) == 0 && !Category::where('category_name', $prevCat)->pluck('id')->isEmpty()) {
+        if (count(Category::where('category_link', $catIddd)->get()) == 0 && !$categoryPrev->isEmpty()) {
 
 
-            $sub_menu = Category::where('category_link', Category::where('category_name', $prevCat)->pluck('id'))->get();
+            $sub_menu = Category::where('category_link', $categoryPrev)->get();
         } else {
             $this->urls[] = $name;
         }
@@ -193,7 +195,8 @@ class HomeController extends Controller
 
         $postIds = CategoryLink::pluck('post_id');
 
-        return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take(5);
+        // return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take(5);
+        return Posts::get()->paginate(4);
     }
 
     function getMainPosts($number)
@@ -201,7 +204,8 @@ class HomeController extends Controller
 
         $postIds = CategoryLink::pluck('post_id');
 
-        return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->paginate($number);
+        // return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->paginate($number);
+        return Posts::get()->paginate(4);
     }
 
     function getMenu()
@@ -213,6 +217,7 @@ class HomeController extends Controller
     {
         $postIds = CategoryLink::pluck('post_id');
 
-        return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take($number);
+        // return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take($number);
+        return Posts::get()->paginate(4);
     }
 }

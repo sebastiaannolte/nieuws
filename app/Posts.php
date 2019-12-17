@@ -34,16 +34,16 @@ class Posts extends Model
         //dd($category);
         $slug = $this->getSlug();
 
-        $lastCat = Category::where('id', $category)->pluck('category_name')->first();
-        $cats = Category::where('id', $category)->pluck('category_link')->first();
+        //$lastCat = Category::where('id', $category)->pluck('category_name')->first();
+        $cats = Category::where('id', $category)->first();
 
-        if ($cats != 0) {
-            array_unshift($this->catUrl, Category::where('id', $cats)->pluck('category_name')->first());
-            $this->category_path($cats);
+        if ($cats->category_link != 0) {
+            array_unshift($this->catUrl, Category::where('id', $cats->category_link)->pluck('category_name')->first());
+            $this->category_path($cats->category_link);
         } else {
             //$this->catUrl[] = $lastCat;
         }
 
-        return implode('/', $this->catUrl) . '/' . $lastCat . '/' . $slug;
+        return implode('/', $this->catUrl) . '/' . $cats->category_name . '/' . $slug;
     }
 }
