@@ -83,7 +83,8 @@ class HomeController extends Controller
 
 
 
-        $posts = $this->get_multi_result_set($this->tags)->paginate(5);
+        // $posts = $this->get_multi_result_set($this->tags)->paginate(5);
+        $posts = Posts::get()->paginate(5);
         //$posts = Category::whereIn('id', $this->tags)->with('post_links')->get();
         // $posts = $posts->getRelationValue('');
         // foreach ($posts as $value) {
