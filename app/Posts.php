@@ -8,7 +8,7 @@ class Posts extends Model
 {
     protected $catUrl = [];
 
-    public $table = "Posts";
+    public $table = "posts";
 
     public function category_links()
     {

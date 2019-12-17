@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    public $table = "Category";
+    public $table = "category";
     //
 
     public function post_links()
