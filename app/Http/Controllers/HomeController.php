@@ -65,7 +65,7 @@ class HomeController extends Controller
 
         // $posts = $this->get_multi_result_set($this->tags)->paginate(5);
 
-        $posts = Category::whereIn('id', $this->tags)->with('post_links')->get()->paginate(5);\
+        $posts = Category::whereIn('id', $this->tags)->with('post_links')->get()->paginate(5);
 
         if ($posts->isEmpty()) {
             return view('errors.404', ['msg' => 'No posts found!', 'menu' => $this->getMenu()]);
