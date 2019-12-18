@@ -22,6 +22,7 @@
 <div class="col-sm-7">
     <div class="news-list">
         @foreach ($posts as $post)
+
         <div class="news-list-item clearfix">
             <div class="col-xs-5">
                 {{-- {{dd($post->category_links->first()->id)}} --}}
@@ -34,8 +35,8 @@
                 {{-- {{dd($post->category_links->first()->category_name)}}
                 {{-- {{$idd = $post->category_links->first()->id}} --}}
                 {{-- --}}
-                {{-- {{dd($post)}} --}}
-                <a href="/{{$post->category_links->first()['slug']}}" class="title">{{$post->title}}</a>
+                {{-- {{dd($category)}} --}}
+                <a href="/p/{{$post->slug}}" class="title">{{$post->title}}</a>
 
 
                 <div class="info">
