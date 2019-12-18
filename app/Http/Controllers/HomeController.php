@@ -44,8 +44,8 @@ class HomeController extends Controller
         return view('post', [
             'menu' => $this->getMenu(),
             'post' => $post,
-            'newPosts' => $this->getNewPosts(5),
-            'relatedPosts' => $this->getRelatedPosts(3),
+            // 'newPosts' => $this->getNewPosts(5),
+            // 'relatedPosts' => $this->getRelatedPosts(3),
         ]);
     }
 
