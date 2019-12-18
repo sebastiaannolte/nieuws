@@ -29,8 +29,8 @@
     <div class="container">
         <div class="row">
             @yield('content')
-            @include('side-menus.right-menu-post')
-            @include('side-menus.components.related');
+            {{-- @include('side-menus.right-menu-post')
+            @include('side-menus.components.related'); --}}
         </div>
     </div>
     @include('footer')
