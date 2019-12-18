@@ -179,7 +179,7 @@ class HomeController extends Controller
     {
 
         $postIds = CategoryLink::pluck('post_id');
-        return Posts::with('category_links')->orderBy('created_at', 'DESC')->whereIn('id', $postIds)->where('categorized', 1)->get()->paginate($number);
+        return Posts::with('category_links')->get()->paginate($number);
     }
 
     function getMenu()
