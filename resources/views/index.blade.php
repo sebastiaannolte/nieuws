@@ -31,25 +31,26 @@
             <div class="col-xs-7">
 
 
-                {{-- {{dd($post->category_links->first()->category_name)}} --}}
+                {{-- {{dd($post->category_links->first()->category_name)}}
                 {{-- {{$idd = $post->category_links->first()->id}} --}}
-                {{--
-                {{dd($idd)}} --}}
-                {{-- <a href="/{{$post->category_path($post->category_links->first()['id'])}}" --}}
-                {{-- class="title">{{$post->title}}</a> --}}
+                {{-- --}}
+                {{-- {{dd($post)}} --}}
+                <a href="/{{$post->category_links->first()['slug']}}" class="title">{{$post->title}}</a>
 
 
                 <div class="info">
                     <span class="avatar"><img src="img/logo.png"></span>
-                    {{-- @foreach ($post->category_links as $tag)
+                    @foreach ($post->category_links as $tag)
                     <div class="label label-default">{{$tag->category_name}}</div>
-                @endforeach --}}
-                <span>{{time_elapsed_string($post->created_at)}}</span>
+                    @endforeach
+
+
+                    <span>{{time_elapsed_string($post->created_at)}}</span>
+                </div>
             </div>
         </div>
-    </div>
-    @endforeach
-    {{-- <div class="news-list-item clearfix">
+        @endforeach
+        {{-- <div class="news-list-item clearfix">
             <div class="col-xs-5">
                 <img src="img/003.jpg">
             </div>
@@ -91,8 +92,8 @@
                 </div>
             </div>
         </div> --}}
-</div>
-{!! $posts->render() !!}
+    </div>
+    {!! $posts->render() !!}
 </div>
 
 

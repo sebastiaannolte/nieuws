@@ -13,5 +13,9 @@
 
 Route::get('/', 'HomeController@index');
 // Route::get('/', 'HomeController@index');
+
+
+Route::get('/p/{slug}', 'HomeController@post');
+// ->where('categories', '^[a-zA-Z0-9-_\/]+$');
 Route::get('/{categories}', 'HomeController@category')
     ->where('categories', '^[a-zA-Z0-9-_\/]+$');

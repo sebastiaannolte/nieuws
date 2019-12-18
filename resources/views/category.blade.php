@@ -12,17 +12,17 @@
 
         <div class="news-list-item clearfix">
             <div class="col-xs-5">
-
-                <img src="{{ $post->getImage() }}">
+                {{-- {{dump($post)}} --}}
+                <img src="{{ $post->post_links()->first()['title'] }}">
             </div>
             <div class="col-xs-7">
-                <a href="/{{$post->category_path($post->category_links->first()['id'])}}"
-                    class="title">{{$post->title}}</a>
+                <a href="/p/{{ $post->post_links()->first()['slug'] }}"
+                    class="title">{{ $post->post_links()->first()['title'] }}</a>
                 <div class="info">
                     <span class="avatar"><img src="{{asset('img/logo.png')}}"></span>
-                    @foreach ($post->category_links as $tag)
-                    <div class="label label-default">{{$tag->category_name}}</div>
-                    @endforeach
+                    {{-- @foreach ($post as $tag) --}}
+                    <div class="label label-default">{{$post->category_name}}</div>
+                    {{-- @endforeach --}}
 
                     <span>25k Weergaven</span>•
                     <span>{{time_elapsed_string($post->created_at)}}</span>

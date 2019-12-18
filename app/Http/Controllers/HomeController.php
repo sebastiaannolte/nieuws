@@ -25,106 +25,70 @@ class HomeController extends Controller
         ]);
     }
 
-    public function category($name)
+    public function post($slug)
     {
-        $catNameIfPost = basename(dirname($name));
-        $name = basename($name);
+        $slug = basename($slug);
 
 
+        $post = Posts::where('slug', $slug)->first();
 
-        if (Category::where('category_name', '=', create_title($name))->exists() == 0) {
-
-            $slug = $name;
-            $post = Posts::where('slug', $slug)->first();
-
-            if ($post == null) {
-                return view('errors.404', ['msg' => 'Post not found!', 'menu' => $this->getMenu()]);
-            }
-            $segments = implode('/', request()->segments());
-            $path = $post->category_path($post->category_links->first()->id);
-            //dd($path, $segments);
-            if ($path != $segments) {
-                return view('errors.404', ['msg' => 'Post not found!!', 'menu' => $this->getMenu()]);
-            }
-
-            return view('post', [
-                'menu' => $this->getMenu(),
-                'post' => $post,
-                'tags' =>  $post->category_links->pluck('category_name'),
-                'newPosts' => $this->getNewPosts(5),
-                'relatedPosts' => $this->getRelatedPosts(3),
-            ]);
-        }
-
-        if (Category::where('category_name', $name)->get()->isEmpty()) {
+        if ($post == null) {
             return view('errors.404', ['msg' => 'Post not found!', 'menu' => $this->getMenu()]);
         }
+
+        // dd($path, $segments);
+        if ($post->slug != $slug) {
+            return view('errors.404', ['msg' => 'Post not found!!', 'menu' => $this->getMenu()]);
+        }
+
+        return view('post', [
+            'menu' => $this->getMenu(),
+            'post' => $post,
+            'newPosts' => $this->getNewPosts(5),
+            'relatedPosts' => $this->getRelatedPosts(3),
+        ]);
+    }
+
+    public function category($name)
+    {
+        $name = basename($name);
 
         $sub_menu = Category::where('category_link', Category::where('category_name', $name)->pluck('id'))->get();
 
         $cat = Category::where('category_name', $name)->first();
-        $this->category_tree($cat->category_link);
+        $this->category_tree($cat->category_link); //needed?
+
         $this->tags($cat->id);
 
 
 
 
-        $thisCategory = Category::where('category_name', $name)->pluck('id');
-        //dd($thisCategory);
-        $categoryTag = CategoryTags::where('category_id', $thisCategory)->pluck('category_id');
-        //dd($categoryTag);
+        // $posts = $this->get_multi_result_set($this->tags)->paginate(5);
 
+        $posts = Category::whereIn('id', $this->tags)->with('post_links')->get()->paginate(5);\
 
-
-
-        if (!$categoryTag->isEmpty()) {
-            //if tag is set take from db.
-            $this->tags[] = $categoryTag[0];
+        if ($posts->isEmpty()) {
+            return view('errors.404', ['msg' => 'No posts found!', 'menu' => $this->getMenu()]);
         }
 
-
-
-        $posts = $this->get_multi_result_set($this->tags)->paginate(5);
-        //$posts = Category::whereIn('id', $this->tags)->with('post_links')->get();
-        // $posts = $posts->getRelationValue('');
-        // foreach ($posts as $value) {
-        //     dd($value->post_links->first()->getImage());
-        // }
-
-
-        // if ($posts->isEmpty()) {
-        //     return view('errors.404', ['msg' => 'No posts found!', 'menu' => $this->getMenu()]);
-        // }
-
-
-        //if missing urls, add this
-        //$this->urls[] = $name;
 
         $prevCat = (request()->segment(count(request()->segments()) - 1));
         $categoryPrev = Category::where('category_name', $prevCat)->pluck('id');
         $catIddd = Category::where('category_name', $name)->pluck('id')->first();
 
         if (count(Category::where('category_link', $catIddd)->get()) == 0 && !$categoryPrev->isEmpty()) {
-
-
             $sub_menu = Category::where('category_link', $categoryPrev)->get();
         } else {
-            $this->urls[] = $name;
+            $this->urls[] = $name; // needed?
         }
-
-
 
         return view('category', [
             'menu' => $this->getMenu(),
             'sub_menu' => $sub_menu,
             'urls' => implode('/', $this->urls),
             'posts' => $posts,
-
-
             'newPosts' => $this->getNewPosts(5),
             'relatedPosts' => $this->getRelatedPosts(5),
-
-
         ]);
     }
 
@@ -141,18 +105,18 @@ class HomeController extends Controller
         }
     }
 
-    function tags($parent = 0)
+    function tags($parent = 0, $catId = null)
     {
         $cats = Category::where('category_link', $parent)->get();
 
-        foreach ($cats as $item) {
+        if (!in_array($parent, $this->tags)) {
+            $this->tags[] = $parent;
+        }
 
-            $items = $item->category_id;
-            $items = CategoryTags::where('category_id', $item->id)->pluck('category_id')->first();
-            $this->tags($item->id);
-            if ($items) {
-                $this->tags[] = $items;
-            }
+
+        foreach ($cats as $value) {
+            $this->tags[] = $value->id;
+            $this->tags($value->id);
         }
     }
 
@@ -172,40 +136,35 @@ class HomeController extends Controller
     //     return implode('/', $this->catUrl) . '/' . $lastCat . '/' . $slug;
     // }
 
-    function get_multi_result_set($statement)
-    {
-        $resultSet = [];
+    // function get_multi_result_set($statement)
+    // {
+    //     $resultSet = [];
 
-        foreach ($statement as $item) {
-            $postIds = CategoryLink::where('category_id', $item)->pluck('post_id');
-            $posts = Posts::with('category_links')->whereIn('id', $postIds)->get();
+    //     foreach ($statement as $item) {
+    //         $postIds = CategoryLink::where('category_id', $item)->pluck('post_id');
+    //         $posts = Posts::with('category_links')->whereIn('id', $postIds)->get();
 
-            foreach ($posts as $value) {
-                if ($posts->isNotEmpty()) {
-                    array_push($resultSet, $value);
-                }
-            }
-        }
+    //         foreach ($posts as $value) {
+    //             if ($posts->isNotEmpty()) {
+    //                 array_push($resultSet, $value);
+    //             }
+    //         }
+    //     }
 
-        return collect($resultSet)->unique();
-    }
+    //     return collect($resultSet)->unique();
+    // }
 
     function getNewPosts($number)
     {
-
         $postIds = CategoryLink::pluck('post_id');
-
-        // return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take(5);
-        return Posts::get()->paginate(4);
+        return  Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take(5);
     }
 
     function getMainPosts($number)
     {
 
         $postIds = CategoryLink::pluck('post_id');
-
-        // return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->paginate($number);
-        return Posts::get()->paginate(4);
+        return Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->paginate($number);
     }
 
     function getMenu()
@@ -217,7 +176,6 @@ class HomeController extends Controller
     {
         $postIds = CategoryLink::pluck('post_id');
 
-        // return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take($number);
-        return Posts::get()->paginate(4);
+        return  Posts::orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take($number);
     }
 }

@@ -6,9 +6,9 @@
             <?php $i = 0;?>
 
             @foreach ($newPosts as $newPost)
+            {{dd($newPost)}}
             <div class="item">
-                <a href="/{{$newPost->category_path($newPost->category_links->first()['id'])}}"
-                    class="title">{{$newPost->title}}</a>
+                <a href="/" {{$newPost->category_links->first()['slug']}}" class="title">{{$newPost->title}}</a>
                 <div class="desc">
                     @foreach ($newPost->category_links as $tag)
                     <div class="label label-default">{{$tag->category_name}}</div>
