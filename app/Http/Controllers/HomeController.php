@@ -71,11 +71,11 @@ class HomeController extends Controller
 
         // $cats = Category::whereIn('id', $this->tags)->firstOrFail();
 
-        $posts = Category::whereIn('id', $this->tags)->with('post_links')->get();
-        $posts->first()->post_links->first();
-        dd($posts);
+        // $posts = Category::whereIn('id', $this->tags)->with('post_links')->get();
+        // $posts->first()->post_links()->paginate(10);
+        // dd($posts);
 
-        // $posts = Category::with('post_links')->whereIn('id', $this->tags)->paginate(10);
+        $posts = Category::with('post_links')->whereIn('id', $this->tags)->paginate(10);
         // $posts->getCollection()->transform(function ($item) {
         //     return $item;
         // });
@@ -170,15 +170,14 @@ class HomeController extends Controller
 
     function getNewPosts($number)
     {
-        $postIds = CategoryLink::pluck('post_id');
-        return  Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->take(5);
+        $categoryLink = CategoryLink::get();
+        return  Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $categoryLink->id)->get()->take(5);
     }
 
     function getMainPosts($number)
     {
-
         $postIds = CategoryLink::pluck('post_id');
-        return Posts::with('category_links')->get()->paginate($number);
+        return Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->paginate($number);
     }
 
     function getMenu()
