@@ -9,15 +9,18 @@
         <?php $i = 0;?>
 
         @foreach ($posts as $post)
+        @foreach ($post->post_links as $item)
+
+
+        {{-- {{dd($post)}} --}}
 
         <div class="news-list-item clearfix">
             <div class="col-xs-5">
                 {{-- {{dump($post)}} --}}
-                <img src="{{ $post->post_links()->first()['title'] }}">
+                <img src="{{ $item['featured_image'] }}">
             </div>
             <div class="col-xs-7">
-                <a href="/p/{{ $post->post_links()->first()['slug'] }}"
-                    class="title">{{ $post->post_links()->first()['title'] }}</a>
+                <a href="/p/{{ $item['slug'] }}" class="title">{{ $item['title'] }}</a>
                 <div class="info">
                     <span class="avatar"><img src="{{asset('img/logo.png')}}"></span>
                     {{-- @foreach ($post as $tag) --}}
@@ -30,6 +33,7 @@
             </div>
         </div>
         <?php $i++; ?>
+        @endforeach
         @endforeach
     </div>
     {!! $posts->render() !!}
