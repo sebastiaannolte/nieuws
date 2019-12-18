@@ -87,8 +87,8 @@ class HomeController extends Controller
             'sub_menu' => $sub_menu,
             'urls' => implode('/', $this->urls),
             'posts' => $posts,
-            'newPosts' => $this->getNewPosts(5),
-            'relatedPosts' => $this->getRelatedPosts(5),
+            // 'newPosts' => $this->getNewPosts(5),
+            // 'relatedPosts' => $this->getRelatedPosts(5),
         ]);
     }
 

@@ -30,8 +30,8 @@
         <div class="row">
             @include('side-menus.left-menu')
             @yield('content')
-            @include('side-menus.right-menu-index')
-            @include('side-menus.components.related')
+            {{-- @include('side-menus.right-menu-index')
+            @include('side-menus.components.related') --}}
 
 
         </div>
