@@ -12,7 +12,7 @@
 
     </div>
     <div class="news-content">
-        <img class="center-block" src="{{$post->featured_image}}">
+        <img class="center-block" src="{{$post->getImage()}}">
         {{$post->description}}
     </div>
 </div>
