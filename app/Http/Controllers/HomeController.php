@@ -21,7 +21,6 @@ class HomeController extends Controller
     {
         return view('index', [
             'menu' => $this->getMenu(),
-            'newPosts' => $this->getNewPosts(5),
             'posts' => $this->getMainPosts(5),
         ]);
     }
