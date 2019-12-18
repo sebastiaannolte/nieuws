@@ -28,6 +28,11 @@ class Posts extends Model
         return $this->slug;
     }
 
+    public function paginatePost()
+    {
+        return $this->post_links()->paginate(3);
+    }
+
     function category_path($category)
     {
         //$category = $this->getCategory();

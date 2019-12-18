@@ -66,7 +66,20 @@ class HomeController extends Controller
 
         // $posts = $this->get_multi_result_set($this->tags)->paginate(5);
 
-        $posts = Category::with('post_links')->whereIn('id', $this->tags)->get()->paginate(5);
+        // $categories = Category::with('post_links')->whereIn('id', $this->tags)->get()->post_links()->paginate(5);
+        // $posts = $categories->post_links();
+        // dd($categories);
+
+        // $cats = Category::whereIn('id', $this->tags)->firstOrFail();
+
+        $posts = Category::whereIn('id', $this->tags)->with('post_links')->get();
+        $posts->first()->post_links->first();
+        dd($posts);
+
+        // $posts = Category::with('post_links')->whereIn('id', $this->tags)->paginate(10);
+        // $posts->getCollection()->transform(function ($item) {
+        //     return $item;
+        // });
 
         if ($posts->isEmpty()) {
             return view('errors.404', ['msg' => 'No posts found!', 'menu' => $this->getMenu()]);
@@ -88,6 +101,7 @@ class HomeController extends Controller
             'sub_menu' => $sub_menu,
             'urls' => implode('/', $this->urls),
             'posts' => $posts,
+
             // 'newPosts' => $this->getNewPosts(5),
             // 'relatedPosts' => $this->getRelatedPosts(5),
         ]);
@@ -165,7 +179,7 @@ class HomeController extends Controller
     {
 
         $postIds = CategoryLink::pluck('post_id');
-        return Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->paginate($number);
+        return Posts::with('category_links')->orderBy('created_at', 'DESC')->whereIn('id', $postIds)->where('categorized', 1)->get()->paginate($number);
     }
 
     function getMenu()
