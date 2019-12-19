@@ -75,10 +75,9 @@ class HomeController extends Controller
         // $posts->first()->post_links()->paginate(10);
         // dd($posts);
 
-        $posts = Category::with('post_links')->whereIn('id', $this->tags)->paginate(10);
-        // $posts->getCollection()->transform(function ($item) {
-        //     return $item;
-        // });
+        //$posts = Category::with('post_links')->whereIn('id', $this->tags)->paginate(10);
+        $postIds = CategoryLink::whereIn('category_id', $this->tags)->pluck('post_id');
+        $posts = Posts::with('category_links')->whereIn('id', $postIds)->get()->paginate(5);
 
         if ($posts->isEmpty()) {
             return view('errors.404', ['msg' => 'No posts found!', 'menu' => $this->getMenu()]);
