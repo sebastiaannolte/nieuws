@@ -52,7 +52,13 @@ class MyCommand extends Command
         foreach ($posts as $post) {
             foreach ($tags as $tag) {
 
-                if (Str::contains(strtolower($post->description), strtolower($tag->tag))) {
+
+                // if (strpos(strtolower($post->description), strtolower($tag->tag)) !== false) {
+                $word = strtolower($tag->tag);
+                if (preg_match("/\b$word\b/", strtolower($post->description))) {
+                    // word found
+
+
                     //category found, save
                     $categoryLink = new CategoryLink();
                     $categoryLink->category_id = $tag->category_id;
