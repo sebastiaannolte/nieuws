@@ -175,8 +175,9 @@ class HomeController extends Controller
 
     function getMainPosts($number)
     {
-        $postIds = CategoryLink::pluck('post_id');
-        return Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->paginate($number);
+        // $postIds = CategoryLink::pluck('post_id');
+        // return Posts::with('category_links')->orderBy('created_at', 'DESC')->where('categorized', 1)->whereIn('id', $postIds)->get()->paginate($number);
+        return Posts::get()->paginate(5);
     }
 
     function getMenu()
